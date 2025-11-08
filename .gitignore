@@ -1,0 +1,39 @@
+# ---- Python ----
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.egg-info/
+*.log
+
+# ---- Virtual environment ----
+env/
+venv/
+ENV/
+
+# ---- macOS / Windows system files ----
+.DS_Store
+Thumbs.db
+
+# ---- SQLite database ----
+*.db
+*.sqlite3
+
+# ---- Reports / PDFs (except docs) ----
+*.pdf
+!docs/*.pdf
+
+# ---- IDE / Editor ----
+.vscode/
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ---- Flask-specific ----
+instance/
+*.pid
+
+# ---- Temporary or generated files ----
+tmp/
+temp/
+cache/

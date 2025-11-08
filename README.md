@@ -6,7 +6,6 @@ back-office for secretariat and employees.
 **Stack:** Flask, Flask-Login, Pony ORM (SQLite), Jinja templates, ReportLab (PDF).
 
 > **Authors / Collaborators:** Ilaria Ballerini, Elisa Biasi, Irene Greco  
-> **Docs:** see `docs/` (if present).
 
 ---
 
