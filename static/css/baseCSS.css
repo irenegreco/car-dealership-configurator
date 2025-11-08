@@ -1,0 +1,284 @@
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  height: 100%;
+  color: black;
+  line-height: 1.8;
+  font-size: 24px;
+}
+
+/* Create a Parallax Effect 
+.bgimg-1, .bgimg-2, .bgimg-3, .sconto1, .sconto2, .sconto3 {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}*/
+
+.elementoSfondo {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* First image (Logo. Full height) */
+.bgimg-1 {
+    background-image: url("https://images.unsplash.com/photo-1617654112368-307921291f42?q=80&w=1913&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    min-height: 100%;
+    z-index: -1;  
+}
+
+
+/* Second image (Portfolio) */
+.bgimg-2 {
+  background-image: url("https://images.unsplash.com/photo-1617654112368-307921291f42?q=80&w=1913&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url('https://images.unsplash.com/photo-1601278840447-9af5ac4ed157?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+
+  min-height: 400px;
+}
+
+/* Third image (Contact) */
+.bgimg-3 {
+  background-image: url("https://www.motortrend.com/uploads/2023/11/014-2024-ferrari-sf90-xx-stradale.jpg");
+  min-height: 400px;
+}
+
+.sconto1 {
+  background-image: url("https://content.presspage.com/uploads/1896/1920_17c986-049.jpg");
+  min-height: 80%;
+}
+
+.sconto2 {
+  background-image: url("https://statics.quattroruote.it/news/mercato/2022/12/10/osservatorio_crif_calano_ancora_le_richieste_di_finanziamenti_auto/jcr:content/image.img2.social.jpg/1670665402843.jpg");
+  min-height: 80%;
+}
+
+.sconto3 {
+  background-image: url("https://media-assets.wired.it/photos/615f1378d8fa077968fa006c/master/w_1600%2Cc_limit/wired_placeholder_dummy.png");
+  min-height: 80%;
+}
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+/* Turn off parallax scrolling for tablets and phones */
+@media only screen and (max-device-width: 1600px) {
+  .bgimg-1, .bgimg-2, .bgimg-3 {
+    background-attachment: scroll;
+    min-height: 400px;
+  }
+}
+
+.containerListinoAuto {
+  padding: 50px;
+  justify-content: center;
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 3fr);
+  grid-gap: 20px;
+}
+
+/* Media query per schermi di larghezza massima di 600px */
+@media (max-width: 700px) {
+  .containerListinoAuto {
+      grid-template-columns: 1fr; /* Un contenitore per fila */
+  }
+}
+
+/* Media query per schermi di larghezza minima di 601px */
+@media (min-width: 601px) {
+  .containerListinoAuto {
+      grid-template-columns: repeat(2, 3fr); /* Due contenitori per fila */
+  }
+}
+
+
+.listinoAuto {
+  margin: 50px;
+  width:auto;
+  min-width: 400px;
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.containerNav {
+    background-color: whitesmoke;
+    z-index: 2;
+    position: block;
+    min-height: 100px;
+    color: black;
+    display: flex;
+    align-items: center;
+    justify-content:space-between;
+    padding-left: 50px;
+    padding-right: 50px;
+
+}
+
+#logoNoNome {
+    max-height: 80px;
+}
+
+#nomeLogo {
+    max-height: 60px;
+    
+}
+
+.titolone {
+    font-size: 80px;
+    color: #f2a929;
+    font-weight: 600;
+    word-wrap: break-word;
+    max-width: 100%;
+}
+
+.imgListino {
+    /*max-width: 440px;
+    min-width: 440px;*/
+
+    max-height: 247px;
+    min-height: 247px;
+
+}/*
+.riquadroAuto {
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content:center;
+}
+
+.titoloListino {
+    font-weight: 40px;
+    font-weight: 400;
+    color: #f2a929;
+}*/
+
+.titoloParagrafi {
+    color: #f2a929; 
+    font-weight: 900; 
+    font-size: 60px;
+}
+
+button:hover {
+    background: #f2a929;
+}
+
+.configuraBtn {
+    background-color: #f2a929;
+    border-radius: 10px;
+}
+
+body {
+  position: flex;
+}
+
+@media (max-width: 600px) {
+  .containerNav {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .w3-left,
+  .w3-right {
+    padding-left: 0;
+    padding-right: 0;
+  }
+}
+
+.sfondoGiallo {
+  background-color: #f2a929;
+  color: black;
+  font-size: 30px;
+}
+
+
+#messageContainer {
+  text-align: center;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #f0f0f0;
+  /*padding: 20px;*/
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+  /*min-width: max-content;
+  max-width: 80%;*/
+  min-width: 300px;
+  min-height: 150px;
+  padding: 5%;
+  z-index: 9999;
+  
+}
+
+#message {
+  color: #333;
+  font-size: 24px;
+}
+
+#closeButton {
+  bottom: 0;
+  margin-bottom: 0;
+  border: 0;
+}
+
+#closeButton:hover {
+  background: #ababab;
+}
+
+.containerForm {
+  padding: 5%;
+}
+
+.formLogin {
+  background-color: #f0f0f0ca;
+
+}
+
+.formButton {
+  width: 100%; 
+  border-radius: 10px;
+  color: black;
+  font-size: 30px;
+}
+
+.containerListinoAuto {
+  display: flex;
+  flex-direction: column;
+  
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin-right: -15px; /* Compensiamo il margin negativo della colonna */
+  margin-left: -15px; /* Compensiamo il margin negativo della colonna */
+  width: 100%;
+  
+}
+
+.col {
+  flex: 0 0 50%; /* Ogni colonna occupa il 50% della larghezza */
+  max-width: 50%; /* Ogni colonna occupa al massimo il 50% della larghezza */
+  padding-right: 15px; /* Margin right tra le colonne */
+  padding-left: 15px; /* Margin left tra le colonne */
+}
+
+.listinoAuto {
+  min-width: 90%; /* Imposta la larghezza desiderata */
+  margin-bottom: 20px; /* Aggiunge un margine inferiore tra i listiniAuto */
+}
+/*
+.imgListino {
+  width: 100%;
+}*/
+
+#prezzoTotale {
+  font-size: 40px;
+  
+}
+
+.bordiTabella {
+  border: 3px solid rgb(92, 92, 92);
+}

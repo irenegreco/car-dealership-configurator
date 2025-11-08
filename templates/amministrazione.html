@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/baseCSS.css') }}">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-black.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/segreteriaCSS.css') }}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <title>Pagina Amministrazione</title>
+</head>
+<body>
+  <div class="w3-top containerNav">
+    <div class="w3-left w3-hide-small">
+      <a href="" class="w3-bar-item w3-button w3-wide"><img id="logoNoNome" src="{{ url_for('static', filename='css/macchina_senzasfondo.png') }}" /></a>
+      <img id="nomeLogo" src="{{ url_for('static', filename='css/nomeLogo.png') }}" />
+    </div>
+    
+    <div class="w3-center" style="padding: 0 10px; background-color: rgb(220, 220, 220); border-radius: 10px; width:40%">
+      <h1 class="w3-xlarge w3-animate-bottom" style="font-weight: 700; color:rgb(83, 83, 83)">AREA AMMINISTRAZIONE</h1>
+    </div>
+  </div>
+
+  <nav class="w3-sidebar w3-hide-medium w3-hide-small" style="width:20%; background-color: rgb(220, 220, 220); padding: 10% 0;">
+    {% block sideBar %}{% endblock %}
+  </nav>
+
+  <div class="w3-content w3-main " style="padding: 5% 10%; margin-left: 20%; min-width: 80%; justify-content: center; align-items: center;">        
+    {% block content %}{% endblock %}
+  </div>
+
+</body>
+</html>

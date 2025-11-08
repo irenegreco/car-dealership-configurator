@@ -1,0 +1,209 @@
+body,h1,h2,h3,h4,h5,h6 {font-family: "Lato", sans-serif;}
+body, html {
+  height: 100%;
+  color: black;
+  line-height: 1.8;
+  font-size: 24px;
+}
+
+/* Create a Parallax Effect 
+.bgimg-1, .bgimg-2, .bgimg-3, .sconto1, .sconto2, .sconto3 {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}*/
+
+.elementoSfondo {
+  background-attachment: fixed;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+/* First image (Logo. Full height) */
+.bgimg-1 {
+    background-image: url("https://images.unsplash.com/photo-1617654112368-307921291f42?q=80&w=1913&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+    min-height: 100%;
+    z-index: -1;  
+}
+
+
+/* Second image (Portfolio) */
+.bgimg-2 {
+  background-image: url("https://images.unsplash.com/photo-1617654112368-307921291f42?q=80&w=1913&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  background-image: url('https://images.unsplash.com/photo-1601278840447-9af5ac4ed157?q=80&w=1964&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+
+  min-height: 400px;
+}
+
+/* Third image (Contact) */
+.bgimg-3 {
+  background-image: url("https://images.unsplash.com/photo-1532581140115-3e355d1ed1de?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  min-height: 400px;
+}
+
+.sconto1 {
+  background-image: url("https://images.unsplash.com/photo-1601046668433-65d0c898c8a8?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  min-height: 70%;
+}
+
+.sconto2 {
+  background-image: url("https://images.unsplash.com/photo-1637748632949-c34d957b4f6a?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D");
+  min-height: 70%;
+}
+
+.sconto3 {
+  background-image: url("https://media-assets.wired.it/photos/615f1378d8fa077968fa006c/master/w_1600%2Cc_limit/wired_placeholder_dummy.png");
+  min-height: 70%;
+}
+
+.w3-wide {letter-spacing: 10px;}
+.w3-hover-opacity {cursor: pointer;}
+
+/* Turn off parallax scrolling for tablets and phones */
+@media only screen and (max-device-width: 1600px) {
+  .bgimg-1, .bgimg-2, .bgimg-3 {
+    background-attachment: scroll;
+    min-height: 400px;
+  }
+}
+
+.containerListinoAuto {
+  padding: 50px;
+  justify-content: center;
+  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(2, 3fr);
+  grid-gap: 20px;
+}
+
+/* Media query per schermi di larghezza massima di 600px */
+@media (max-width: 700px) {
+  .containerListinoAuto {
+      grid-template-columns: 1fr; /* Un contenitore per fila */
+  }
+}
+
+/* Media query per schermi di larghezza minima di 601px */
+@media (min-width: 601px) {
+  .containerListinoAuto {
+      grid-template-columns: repeat(2, 3fr); /* Due contenitori per fila */
+  }
+}
+
+
+.containerNav {
+  background-color: whitesmoke;
+  z-index: 2;
+  position: block;
+  min-height: 100px;
+  color: black;
+  display: flex;
+  align-items: center;
+  justify-content:space-between;
+  padding-left: 50px;
+  padding-right: 50px;
+
+}
+
+
+#logoNoNome {
+  max-height: 80px;
+}
+
+#nomeLogo {
+  max-height: 60px;
+  
+}
+
+.fieldContainer {
+    padding: 20px;
+    border-radius: 10px;
+}
+
+.formButton {
+    width: 100%;
+    border-radius: 10px;
+    background-color:#f2a929;
+    font-size: 30px;
+}
+
+
+.formInserimento {
+    padding: 40px;
+    border-radius: 10px;
+    background-color: rgb(232, 232, 232);
+}
+
+.campoInserimento {
+    border: 0;
+    border-radius: 10px;
+    background-color: white;
+
+}
+
+
+#messageContainer {
+    text-align: center;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #f0f0f0;
+    /*padding: 20px;*/
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    /*min-width: max-content;
+    max-width: 80%;*/
+    min-width: 300px;
+    min-height: 150px;
+    padding: 5%;
+    z-index: 9999;
+    
+  }
+  
+  #message {
+    color: #333;
+    font-size: 24px;
+  }
+  
+  #closeButton {
+    bottom: 0;
+    margin-bottom: 0;
+    border: 0;
+  }
+  
+  #closeButton:hover {
+    background: #ababab;
+  }
+  
+.containerForm {
+  margin: 80px 0;
+  border-radius: 10px;
+  padding: 100px 50px 80px 50px;
+  border: 3px solid #ababab;
+}
+
+.titoloContainer {
+  font-size: 50px;
+  font-weight: 800;
+  color: #f2a929;
+}
+
+.sottotitoloContainer {
+  margin-top: 50px;
+}
+
+.containerTitolone {
+  width: 100%;
+  text-align: center;
+}
+
+.deleteButton {
+  text-decoration: none;
+  border-radius: 10px;
+  background-color:#f2a929;
+  font-size: 30px;
+}
+

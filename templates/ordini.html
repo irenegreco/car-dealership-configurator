@@ -1,0 +1,132 @@
+{% extends 'amministrazione.html' %}
+
+{% block sideBar %}
+  <div class="bgimg"></div>
+  <div class="w3-container">
+    {% if matricola %}
+      <div style="background-color: rgb(173, 173, 173); padding: 10px; border-radius: 10px;">
+        <h4>Segretario: {{ matricola }}</h4>
+        <a href="{{ url_for('logout_impiegato') }}" class="btn sfondoGiallo" style="width: 100%;"> LOGOUT</a>
+      </div>
+    {% endif %}
+    <br />
+    <br />
+    <div id="menu">
+      <ul class="w3-ul">
+        <li><a href="#ordini" class="configuraBtn w3-bar-item w3-button" id="vediPreventivi" style="border: 2px solid rgb(96, 96, 96); width: 100%;">ORDINI</a></li>
+        <br>
+        <li><a href="{{ url_for('segreteria') }}" class="configuraBtn w3-bar-item w3-button" id="gestioneAuto" style="border: 2px solid rgb(96, 96, 96); width: 100%;">GESTIONE AUTO</a></li>
+      </ul>
+    </div>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="messageContainer" class="center">
+        {% for message in messages %}
+          <h1 id="message">{{ message }}</h1>
+        {% endfor %}
+        <br /><br />
+        <button id="closeButton" class="formButton">Chiudi</button>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="containerForm" id="ordini">
+    <div class="containerTitolone">
+        <h1 class="titoloContainer">ORDINI</h1>
+    </div>  
+    <h2>Lista Ordini</h2>
+
+    <table class="table">
+      <thead>
+        <tr>
+          <th>CODICE ORDINE</th>
+          <th>SEDE</th>
+          <th>CLIENTE</th>
+          <th>BRAND</th>
+        </tr>
+        </thead>
+        <tbody>
+          {% for ordine in ordini %}
+            <tr>
+              <td>{{ ordine.codice }}</td>
+              <td>{{ ordine.sede_ritiro.nome }}</td>
+              <td>{{ ordine.preventivo.cliente.email }}</td>
+              <td>{{ ordine.preventivo.auto.modello.brand.nome }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+    </table>
+    <form action="/visualizza_ordini" method="POST" class="formInserimento">
+      <label for="sede">Sede:</label>
+      <select id="sede" name="sede" class="campoInserimento w3-input" style="width: 100%;">
+        <option value="">Tutte le sedi</option>
+          {% for s in sedi %}
+            <option value="{{ s.nome }}">{{ s.nome }}</option>
+          {% endfor %}
+      </select>
+      <br >
+      <label for="cliente">Cliente:</label>
+      <select id="cliente" name="cliente" class="campoInserimento w3-input" style="width: 100%;">
+        <option value="">Tutti i clienti</option>
+        {% for c in clienti %}
+          <option value="{{ c.email }}">{{ c.email }}</option>
+        {% endfor %}
+      </select>
+      <br >
+      <label for="brand_auto">Brand Auto:</label>
+      <select id="brand_auto" name="brand_auto" class="campoInserimento w3-input" style="width: 100%;">
+        <option value="">Tutti i brand auto</option>
+        {% for b in marche_auto %}
+          <option value="{{ b.nome }}">{{ b.nome }}</option>
+        {% endfor %}
+      </select>
+      <br >
+      <button type="submit" style="width: 100%;" class="formButton w3-button w3-center">Filtra</button>
+    </form>
+    <br><br>
+
+    {% if preventivi_filtrati %}
+      <h2>Ordini Filtrati</h2>
+      <table class="table">
+        <thead>
+          <tr>
+            <th>CODICE ORDINE</th>
+            <th>SEDE</th>
+            <th>CLIENTE</th>
+            <th>BRAND</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for ordine in preventivi_filtrati %}
+            <tr>
+              <td>{{ ordine.codice }}</td>
+              <td>{{ ordine.sede_ritiro }}</td>
+              <td>{{ ordine.cliente_email }}</td>
+              <td>{{ ordine.brand_auto }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+              
+    {% else %}
+      <tr><td colspan="4">Nessun ordine filtrato trovato.</td></tr>
+    {% endif %}
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var closeButton = document.getElementById('closeButton');
+      var messageContainer = document.getElementById('messageContainer');
+
+      if (closeButton && messageContainer) {
+        closeButton.addEventListener('click', function() {
+            messageContainer.style.display = 'none';
+        });
+      }
+    });
+  </script>
+{% endblock %}

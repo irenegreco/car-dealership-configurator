@@ -1,0 +1,45 @@
+{% extends 'amministrazione.html' %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="messageContainer" class="center">
+        {% for message in messages %}
+          <h1 id="message">{{ message }}</h1>
+        {% endfor %}
+        <br /><br />
+        <button id="closeButton" class="formButton">Chiudi</button>
+      </div>
+    {% endif %}
+  {% endwith %}
+    
+  <div class="containerForm">
+    <h1>ACCEDI</h1>
+    <form id="registrationForm" class="formInserimento w3-container w3-card" method="post" action="{{ url_for('loginPersonale') }}">
+      <div class="w3-section">
+        <label for="usrname">Username</label>
+        <input class="w3-input" style="width:100%;" type="text" id="usrname" placeholder="Inserire lo username" required name="usrname" value="{{ request.form.get('usrname', '') }}">
+      </div>
+      <div class="w3-section">
+        <label for="psw">Password</label>
+        <input class="w3-input" style="width:100%;" type="password" id="psw" placeholder="Inserire la password" required name="psw">
+      </div>
+      <br /><br />
+      <button type="submit" class="formButton w3-button  w3-center w3-dark-gray">ACCEDI ORA</button>
+    </form>
+  </div>
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var closeButton = document.getElementById('closeButton');
+        var messageContainer = document.getElementById('messageContainer');
+        if (closeButton && messageContainer) {
+            closeButton.addEventListener('click', function() {
+                messageContainer.style.display = 'none';
+            });
+        }
+    });
+  </script>
+{% endblock %}

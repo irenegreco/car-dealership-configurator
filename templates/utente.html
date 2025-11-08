@@ -1,0 +1,300 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pagina Utente
+{% endblock %}
+
+{% block content %}
+    <div class="w3-container w3-content" style="min-width: 80%; margin-top: 200px;">    
+        <div class="block-container" style="display: flex; justify-content: space-around; align-items: stretch; gap: 20px;">
+            <div class="w3-card w3-round w3-white w3-center w3-padding-24 block-item" style="flex: 1; min-width: 300px; background-color: #a0e516;">
+                <div class="w3-container">
+                    <h4 class="w3-center"><b>PROFILO</b></h4>
+                    <i class="fa fa-user-circle" style="font-size:150px;color:#f2a929;" aria-hidden="true"></i>
+                    <hr>
+                    <p>{{ cliente.name | upper }}</p>
+                    <p>{{ cliente.surname | upper }}</p>
+                </div>
+                <a href="{{ url_for('logout') }}" class="configuraBtn w3-button">LOGOUT</a>
+            </div>
+
+            <div class="w3-card w3-round w3-white w3-center w3-padding-24 block-item" style="flex: 1; min-width: 300px; background-color: #a0e516;">
+                <div class="block-container" >
+                    <h4 class="w3-center"><b>Preventivi in scadenza</b></h4>
+                    {% for preventivo in totPreventivi %}
+                        {% set giorni_rimanenti = (preventivo.data_scadenza - oggi).days %}
+                        {% if preventivo %}
+                            {% if giorni_rimanenti <= 5 %}
+                                <div>
+                                    Preventivo: {{ preventivo.codice }}
+                                    <p>Prezzo: {{ preventivo.prezzo }}</p>
+                                    <p>Scade il: {{ preventivo.data_scadenza }}</p>
+                                    <p id="countdown_{{ preventivo.codice }}"></p>
+                                    <script>
+                                        document.addEventListener('DOMContentLoaded', function() {
+                                            startCountdown("countdown_{{ preventivo.codice }}", "{{ preventivo.data_scadenza.isoformat() }}");
+                                        });
+                                    </script>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <p>Nessun preventivo in scadenza.</p>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+
+            <div class="w3-card w3-round w3-white w3-center block-item w3-padding-24" style="flex: 1; min-width: 300px; background-color: #a0e516;">
+                <div class="block-container">
+                    <h4 class="w3-center"><b>Messaggi non letti</b></h4>
+                    {% if messaggi_non_letti %}
+                        <div class="list-group">
+                            {% for messaggio in messaggi_non_letti %}
+                                <div class="message-item list-group-item">
+                                    <span class="message-text">{{ messaggio.testo }}</span>
+                                    <form method="POST" action="{{ url_for('conferma_lettura', cod_messaggio=messaggio.ordine.codice) }}">
+                                        <button type="submit" class="btn btn-primary btn-sm">Conferma lettura</button>
+                                    </form>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p>Nessun messaggio non letto.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+
+        <div class="w3-container w3-card w3-white w3-round" style="margin-top: 100px;"><br>
+            <div class="w3-container">
+                <h2>CONFIGURAZIONI SALVATE:</h2>
+                <br />
+
+                <p>In questa sezione sono riepilogate le configurazioni salvate. E' possibile richiedere direttamente il preventivo premendo <i>Richiedi Preventivo</i> senza la valutazione dell'usato oppure, se si vuole richiedere anche la valutazione dell'usato seguire le istruzioni riportate. Una volta richiesto il preventivo, potrai trovarlo nella sezione <b><i>Storico Preventivi</i></b> e non potranno più essere effettuate azioni. <br><br> Nel caso si voglia richiedere la valutazione del proprio usato, inserire la targa del veicolo e almeno 4 foto in formato <i>jpeg/jpg/png</i> ciascuna raffigurante il veicolo da diverse angolazioni:</p>
+                <p>Esempio:</p>
+                <li>Foto 1: anteriore <a href="{{ url_for('mostra_pdf', nome_file='foto1.pdf') }}" target="_blank">vedi esempio</a></li>
+                <li>Foto 2: posteriore <a href="{{ url_for('mostra_pdf', nome_file='foto2.pdf') }}" target="_blank">vedi esempio</a></li>
+                <li>Foto 3: laterale destro <a href="{{ url_for('mostra_pdf', nome_file='foto3.pdf') }}" target="_blank">vedi esempio</a></li>
+                <li>Foto 4: laterale sinistro <a href="{{ url_for('mostra_pdf', nome_file='foto4.pdf') }}" target="_blank">vedi esempio</a></li>
+                <br>
+                <p style="color: red;">ATTENZIONE!!! La richiesta del preventivo senza l'inserimento dell'usato non blocca l'invio della pratica, di conseguenza inserire tutte le informazioni di interesse prima di premere il bottone di richiesta.</p>
+                <br>
+
+                {% if configurazioni %}
+                    <table class="table table-striped table-hover table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center align-middle" style="max-width: 200px">MODELLO</th>
+                                <th class="text-center align-middle">TOTALE</th>
+                                <th class="text-center align-middle">VALUTA IL TUO USATO</th>
+                                <th class="text-center align-middle">AZIONI</th>
+                                <th class="text-center align-middle" style="max-width: 200px">STATO</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for configurazione in configurazioni %}
+                                <tr>
+                                    <td class="text-center align-middle" style="max-width: 200px">
+                                        {{ configurazione.modello.nome | upper }} <br>
+                                        Colore: {{ configurazione.colore.nome }} <br>
+                                        Motore: {{ configurazione.motore.alimentazione }} <br>
+                                    </td>
+                                    <td class="text-center align-middle">{{ configurazione.prezzo_totale }} €</td>
+                                    <td>
+                                        <form action="{{ url_for('valuta_usato', configurazione_id=configurazione.codice) }}" method="post" enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="targa">Targa:</label>
+                                                <input type="text" id="targa" name="targa" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="foto">Foto dell'auto (minimo 4, opzionale):</label>
+                                                <input type="file" id="foto" name="foto" class="form-control-file" multiple>
+                                            </div>
+                                    </td>
+                                    <td class="text-center align-middle">
+                                        <button type="submit" class="btn btn-primary" style="width: 250px;">Richiedi preventivo</button>
+                                        </form>
+                                        <br /><br />
+                                        <form action="{{ url_for('elimina_configurazione', codice=configurazione.codice) }}" method="post">
+                                            <button type="submit" class="btn btn-danger" style="width: 250px;">Elimina </button>
+                                        </form>
+                                    </td>
+                                    <td class="text-center align-middle" style="max-width: 200px">
+                                        {% set preventivo_da_valutare = preventiviDaValutare | selectattr('auto.codice', 'equalto', configurazione.codice) | list %}
+                                        {% if preventivo_da_valutare %}
+                                            Richiesta effettuata. Preventivo in stato di elaborazione.
+                                        {% else %}
+                                            {% set preventivo_valutato = totPreventivi | selectattr('auto.codice', 'equalto', configurazione.codice) | list %}
+                                            {% if preventivo_valutato %}
+                                                Il preventivo è stato salvato nello <i>'Storico Preventivi'</i>.
+                                            {% else %}
+                                                Preventivo non ancora richiesto.
+                                            {% endif %}
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                {% else %}
+                    <p>Nessuna configurazione trovata.</p>
+                {% endif %}
+
+                <br />
+                <h2>STORICO PREVENTIVI:</h2>
+                <br>
+                <p>In questa sezione sono riepilogati i preventivi richiesti. Premendo il bottone <i>Scarica PDF</i> è possibile scaricare il file <i>pdf</i> relativo al preventivo. Nel file sono riportati tutti i dettagli della configurazione ed eventuali sconti e/o detrazioni dell'usato.<br><br> Se si vuole confermare il preventivo per richiedere l'ordine dell'auto, è necessario scegliere una sede di consegna ed inserire la ricevuta in formato <i>pdf</i> che attesti il pagamento dell'importo dovuto. Una volta premuto il pulsante <i>CONFERMA</i> verrà generato un messaggio automatico contenente una data indicativa di consegna dell'auto.<br><br>Quando l'auto sarà pronta per il ritiro, le verrà inviato un messaggio visibile nella sezione <i><b>Messaggi non letti</b></i>.</p>
+                <br>
+                {% if totPreventivi %}
+                <table class="table table-striped table-hover table-bordered">
+                    <thead>
+                        <tr>
+                            <th class="text-center align-middle">PREVENTIVO</th>
+                            <th class="text-center align-middle">SCELTA SEDE</th>
+                            <th class="text-center align-middle">PAGAMENTO</th>
+                            <th class="text-center align-middle">STATO</th>
+                            <th class="text-center align-middle">AZIONI</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for preventivo in totPreventivi %}
+                            <tr>
+                                <td class="text-center align-middle">
+                                    {{ preventivo.auto.modello.nome | upper }} <br>
+                                    Colore: {{ preventivo.auto.colore.nome }} <br>
+                                    Totale: {{ preventivo.prezzo }} € <br>
+                                    <a href="{{ url_for('download_preventivo', cod_preventivo=preventivo.codice) }}" class="btn btn-outline-warning"><b>Scarica PDF</b></a>
+                                </td>
+                                
+                                <td>
+                                    <form action="{{ url_for('conferma_preventivo', cod_preventivo=preventivo.codice) }}" method="post" enctype="multipart/form-data">
+                                        <label for="alimentazione">Dove vuoi ritirare l'auto:</label>
+                                        <select class="w3-input campoInserimento" id="sceltaSede" name="sceltaSede" required>
+                                            <option value="" selected hidden>Seleziona una sede</option>
+                                            {% for sede in sedi %}
+                                                <option value="{{ sede.nome }}">{{ sede.nome }}</option>
+                                            {% endfor %}
+                                        </select>
+                                </td>
+                                <td>
+                                    <div class="form-group">
+                                        <label for="attestato">Attestato pagamento:</label>
+                                        <input type="file" id="attestato" name="attestato" class="form-control-file">
+                                    </div>
+                                </td>
+                                <td class="text-center align-middle">
+                                    {% set ordine_associato = ordiniDaConfermare | selectattr('preventivo.codice', 'equalto', preventivo.codice) | list %}
+                                    {% set ordine_concluso = ordiniConclusi | selectattr('preventivo.codice', 'equalto', preventivo.codice) | list %}
+
+                                    {% if ordine_associato %}
+                                        Ordine inviato. Attualmente si trova in stato di elaborazione.
+                                    {% elif ordine_concluso %}
+                                            <p>L'ordine è stato consegnato</p>
+                                    {% else %}
+                                        {% set ordine_confermato = ordiniConfermati | selectattr('preventivo.codice', 'equalto', preventivo.codice) | list %}
+                                        {% if ordine_confermato %}
+                                        <p>Data consegna: {{ ordine_confermato[0].data_consegna.strftime('%Y-%m-%d') }}</p>
+                                        <div>
+                                            <span id="countdown_{{ preventivo.codice }}"></span>
+                                            <p id="deadline_{{ preventivo.codice }}"></p>
+                                            <script>
+                                                document.addEventListener('DOMContentLoaded', function() {
+                                                    startCountdown("countdown_{{ preventivo.codice }}", "{{ ordine_confermato[0].data_consegna.isoformat() }}");
+
+                                                    // Calcola la data relativa
+                                                    var deadlineDate = new Date("{{ ordine_confermato[0].data_consegna.isoformat() }}");
+                                                    var currentDate = new Date();
+                                                    var diffTime = Math.abs(deadlineDate - currentDate);
+                                                    var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+                                                    var countdownElement = document.getElementById("countdown_{{ preventivo.codice }}");
+                                                    var deadlineElement = document.getElementById("deadline_{{ preventivo.codice }}");
+
+                                                    var countdownFunction = setInterval(function() {
+                                                        var now = new Date().getTime();
+                                                        var distance = deadlineDate - now;
+
+                                                        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                                                        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                                                        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                                                        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+                                                        if (distance > 0) {
+                                                            countdownElement.innerHTML = days + "d " + hours + "h " +
+                                                                minutes + "m " + seconds + "s ";
+                                                        } else {
+                                                            clearInterval(countdownFunction);
+                                                            countdownElement.innerHTML = "Consegna effettuata";
+                                                            deadlineElement.textContent = ""; // Rimuovi eventuali testi residui
+                                                        }
+                                                    }, 1000);
+                                                });
+                                            </script>
+                                        </div>
+                                        {% else %}
+                                            <div>
+                                                <p>Scadenza conferma preventivo: {{ preventivo.data_scadenza.strftime('%Y-%m-%d')}}</p>
+                                                <span id="countdown_{{ preventivo.codice }}"></span>
+                                                <p id="deadline_{{ preventivo.codice }}"></p> 
+                                                <script>
+                                                    document.addEventListener('DOMContentLoaded', function() {
+                                                        startCountdown("countdown_{{ preventivo.codice }}", "{{ preventivo.data_scadenza.isoformat() }}");
+                                        
+                                                        // Calcola la data relativa
+                                                        var deadlineDate = new Date("{{ preventivo.data_scadenza.isoformat() }}");
+                                                        var currentDate = new Date();
+                                                        var diffTime = deadlineDate - currentDate;
+                                                        var diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                                        
+                                                        var deadlineElement = document.getElementById("deadline_{{ preventivo.codice }}");
+                                                    });
+                                                </script>
+                                            </div>
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                                <td class="text-center align-middle">
+                                    <button type="submit" class="btn btn-primary" style="width: 200px;">CONFERMA</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                    <p>Nessun preventivo trovato.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+    function startCountdown(elementId, endDate) {
+        var countdownElement = document.getElementById(elementId);
+        var countdownDate = new Date(endDate).getTime();
+
+        var countdownFunction = setInterval(function() {
+            var now = new Date().getTime();
+            var distance = countdownDate - now;
+
+            var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+            var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            countdownElement.innerHTML =days + "d " + hours + "h " +
+                minutes + "m " + seconds + "s ";
+
+            if (distance < 0) {
+                clearInterval(countdownFunction);
+                countdownElement.innerHTML = "EXPIRED";
+            }
+        }, 1000);
+    }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+{% endblock %}

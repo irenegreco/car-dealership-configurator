@@ -1,0 +1,459 @@
+{% extends 'base.html' %}
+
+{% block title %}
+{% endblock %}
+
+{% block altriLink %}
+    <style>
+        .w3-sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; 
+        align-items: center;
+        width: 40%;
+        height: 100vh;
+        background-color: #f1f1f1;
+        padding: 20px;
+        position: relative;
+        }
+
+        .imgContainer {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            width: 100%;
+            height: 80%; 
+            overflow: hidden;
+            padding-top: 50px;
+        }
+
+        .bgimg {
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+            width: 100%;
+            height: 100%; 
+            object-fit: cover; 
+        }
+
+        .priceContainer {
+            position: absolute;
+            bottom: 70px; 
+            text-align: center;
+            width: 100%;
+        }
+
+        .model-image {
+            max-width: 100%; 
+            min-width: 100%;
+            height: auto; 
+            display: block; 
+            margin: 0 auto; 
+        }
+
+        .titoloConfig {
+            border: 3px solid #838383;
+            color: #838383;
+        }
+
+        #prezzoDettagliato {
+            font-size: 20px;
+        }
+
+    </style>
+{% endblock %}
+
+{% block msg %}
+    {{ super() }} <!-- Mantieni il contenuto del blocco msg definito in base.html -->
+{% endblock %}
+
+{% block content %}
+    
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div id="messageContainer" class="center" style="display: none">
+                {% for message in messages %}
+                <h1 id="message">{{ message }}</h1>
+                {% endfor %}
+                <br /><br />
+                <button id="closeButton" class="formButton sfondoGiallo">Chiudi</button>
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <nav class="w3-sidebar w3-hide-medium w3-hide-small" style="width:50%; background-color: white; display: flex; flex-direction: column; align-items: center; margin-right: 30px;">
+        
+        <div class="imgContainer">
+            <div class="bgimg w3-center" id="modelImage"><br><br><br><br>Scegli un colore per mostrare l'auto</div>
+        </div>
+        <div class="priceContainer">
+            <p><b>Totale:    <span style="margin-left: 15px;" id="prezzoTotale">0</span> €</b></p>
+            <p id="prezzoDettagliato"> </p>
+        </div>
+    </nav>
+
+    <div class="w3-main w3-padding-large" style="margin-left:50%; margin-right: 30px;">
+
+        <!-- Header -->
+        <header class="w3-container w3-center" style="padding:100px 16px 50px 16px" id="home">
+            <h1 class="w3-jumbo"><b>CONFIGURA QUI LA TUA AUTO</b></h1>
+        </header>
+
+        <div class="containerForm">
+            <form id="configuratorForm" class="w3-container w3-card w3-padding-32 formLogin" method="POST">
+                <div class="w3-row w3-center w3-section titoloConfig">
+                    <p><b>SELEZIONA IL BRAND</b></p>
+                </div>
+                <div class="w3-section">
+                    <select id="marca" name="marca" class="w3-input" style="width:100%;" required>
+                        <option value="" disabled selected>Seleziona una marca</option>
+                        {% for marca in marche %}
+                            <option value="{{ marca.nome }}">{{ marca.nome | upper}}</option>
+                        {% endfor %}
+                    </select><br>
+                </div>
+                <div class="w3-row w3-center titoloConfig w3-padding-10 w3-section">
+                    <p><b>SELEZIONA IL MODELLO</b></p>
+                </div>
+                <div class="w3-section">
+                    <select id="modello" name="modello" class="w3-input" style="width:100%;" required>
+                        <option value="" disabled selected>Seleziona un modello</option>
+                    </select><br>
+                </div>
+                <div id="modelloDescrizione" class="w3-section" style="display:none;">
+                    <p id="descrizioneTesto"></p>
+                    <br>
+                </div>
+        
+                <div class="w3-row w3-center titoloConfig w3-padding-10 w3-section">
+                    <p><b>SELEZIONA IL COLORE</b></p>
+                </div>
+                <div class="w3-section">
+                    <select id="colore" name="colore" class="w3-input" style="width:100%;" required>
+                        <option value="" disabled selected>Seleziona un colore</option>
+                    </select><br>
+                </div>
+        
+                <div class="w3-row w3-center titoloConfig w3-padding-10 w3-section">
+                    <p><b>SELEZIONA IL MOTORE</b></p>
+                </div>
+                <div class="w3-section">
+                    <select id="motore" name="motore" class="w3-input" style="width:100%;" required>
+                        <option value="" disabled selected>Seleziona un motore</option>
+                    </select><br>
+                </div>
+        
+                <div class="w3-row w3-center titoloConfig w3-padding-10 w3-section">
+                    <p><b>SELEZIONA GLI OPTIONAL</b></p>
+                </div>
+                <div class="w3-section" id="optionalContainer">
+        
+                </div>
+                <input type="hidden" name="optional_data" id="hidden_optional_data">
+        
+        
+                <!-- Hidden input for prezzo_totale -->
+                <input type="hidden" name="prezzo_totale" id="hidden_prezzo_totale">
+                <!-- Hidden input for prezzo_totale degli optional -->
+                <input type="hidden" name="prezzo_totale_optional" id="hidden_prezzo_totale_optional">
+        
+        
+                <div class="buttonContainer">
+                    <br /><br />
+                    <button type="submit" class="formButton w3-button w3-center sfondoGiallo">SALVA CONFIGURAZIONE</button>
+                    <br /><br />
+                    <a href="" id="resetButton" class="formButton w3-button w3-center" style=" background-color: #bdbbbada;">RESET</a>
+                </div>
+            </form>
+        </div>
+        
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('marca').addEventListener('change', function() {
+        var marca_nome = this.value;
+        fetch('/get_modelli/' + marca_nome)
+            .then(response => response.json())
+            .then(data => {
+                var modelloSelect = document.getElementById('modello');
+                modelloSelect.innerHTML = '<option value="" disabled selected>Seleziona un modello</option>';
+                data.forEach(modello => {
+                    var option = document.createElement('option');
+                    option.value = modello.nome;
+                    option.textContent = modello.nome.toUpperCase();
+                    option.dataset.descrizione = modello.descrizione;
+                    modelloSelect.appendChild(option);
+                });
+                document.getElementById('modello').disabled = false;
+            })
+            .catch(error => console.error('Errore durante il recupero dei modelli:', error));
+    });
+
+
+            document.getElementById('modello').addEventListener('change', function() {
+        var selectedOption = this.options[this.selectedIndex];
+        var descrizione = selectedOption.dataset.descrizione;
+        var descrizioneDiv = document.getElementById('modelloDescrizione');
+        var descrizioneTesto = document.getElementById('descrizioneTesto');
+
+        descrizioneTesto.textContent = descrizione;
+        descrizioneDiv.style.display = 'block';
+        updatePrezzoTotale();
+        updateColori();
+        updateModelImage();
+        updateMotori();
+        updateOptional();
+        document.getElementById('colore').disabled = false;
+        document.getElementById('motore').disabled = false;
+        document.getElementById('optionalContainer').style.display = 'block';
+    });
+
+    document.getElementById('colore').addEventListener('change', function() {
+        updatePrezzoTotale();
+        updateModelImage();
+    });
+
+    document.getElementById('motore').addEventListener('change', updatePrezzoTotale);
+    document.getElementById('optionalContainer').addEventListener('change', updatePrezzoTotale);
+
+    document.getElementById('configuratorForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        var optionalCheckboxes = document.querySelectorAll('input[name="optional"]:checked');
+        var optionalData = Array.from(optionalCheckboxes).map(cb => ({
+            nome: cb.nextSibling.textContent,
+            prezzo: parseFloat(cb.value)
+        }));
+
+        var prezzoTotaleOptional = optionalData.reduce((sum, optional) => sum + optional.prezzo, 0);
+
+        document.getElementById('hidden_optional_data').value = JSON.stringify(optionalData);
+        document.getElementById('hidden_prezzo_totale_optional').value = prezzoTotaleOptional.toFixed(2);
+
+        this.submit();
+    });
+
+    function updatePrezzoTotale() {
+        var modelloSelect = document.getElementById('modello');
+        var modelloNome = modelloSelect.value;
+        var coloreSelect = document.getElementById('colore');
+        var coloreNome = coloreSelect.value;
+        var motoreSelect = document.getElementById('motore');
+        var motoreNome = motoreSelect.value;
+        var optionalCheckboxes = document.querySelectorAll('input[name="optional"]:checked');
+        var optionalPrezzi = Array.from(optionalCheckboxes).map(cb => parseFloat(cb.value));
+        var prezzoTotale = 0;
+        var dettagli = [];
+
+        if (modelloNome) {
+            fetch('/get_prezzo_modello/' + modelloNome)
+                .then(response => response.json())
+                .then(data => {
+                    var prezzoBase = data.prezzo_base || 0;
+                    prezzoTotale += prezzoBase;
+                    dettagli.push(modelloNome.toUpperCase() + ": " + prezzoBase + " €");
+
+                    if (coloreNome) {
+                        fetch('/get_colori/' + modelloNome)
+                            .then(response => response.json())
+                            .then(colori => {
+                                var coloreSelezionato = colori.find(c => c.nome === coloreNome);
+                                if (coloreSelezionato) {
+                                    prezzoTotale += coloreSelezionato.prezzo;
+                                    dettagli.push(coloreNome.toUpperCase() + ": " + coloreSelezionato.prezzo + " €");
+                                }
+
+                                if (motoreNome) {
+                                    fetch('/get_motori/' + modelloNome)
+                                        .then(response => response.json())
+                                        .then(motori => {
+                                            var motoreSelezionato = motori.find(m => m.codice === motoreNome);
+                                            if (motoreSelezionato) {
+                                                prezzoTotale += motoreSelezionato.prezzo;
+                                                var motoreText = motoreSelect.options[motoreSelect.selectedIndex].text;
+                                                dettagli.push(motoreText + ": " + motoreSelezionato.prezzo + " €");
+                                            }
+
+                                            optionalPrezzi.forEach(prezzo => {
+                                                prezzoTotale += prezzo;
+                                            });
+
+                                            optionalCheckboxes.forEach(cb => {
+                                                dettagli.push(cb.nextSibling.textContent + ": " + parseFloat(cb.value) + " €");
+                                            });
+
+                                            document.getElementById('prezzoTotale').textContent = prezzoTotale.toFixed(2);
+                                            document.getElementById('hidden_prezzo_totale').value = prezzoTotale.toFixed(2);
+                                            document.getElementById('prezzoDettagliato').innerHTML = dettagli.join("<br>");
+                                        });
+                                } else {
+                                    optionalPrezzi.forEach(prezzo => {
+                                        prezzoTotale += prezzo;
+                                    });
+
+                                    optionalCheckboxes.forEach(cb => {
+                                        dettagli.push(cb.nextSibling.textContent + ": " + parseFloat(cb.value) + " €");
+                                    });
+
+                                    document.getElementById('prezzoTotale').textContent = prezzoTotale.toFixed(2);
+                                    document.getElementById('hidden_prezzo_totale').value = prezzoTotale.toFixed(2);
+                                    document.getElementById('prezzoDettagliato').innerHTML = dettagli.join("<br>");
+                                }
+                            });
+                    } else {
+                        if (motoreNome) {
+                            fetch('/get_motori/' + modelloNome)
+                                .then(response => response.json())
+                                .then(motori => {
+                                    var motoreSelezionato = motori.find(m => m.codice === motoreNome);
+                                    if (motoreSelezionato) {
+                                        prezzoTotale += motoreSelezionato.prezzo;
+                                        var motoreText = motoreSelect.options[motoreSelect.selectedIndex].text;
+                                        dettagli.push(motoreText + ": " + motoreSelezionato.prezzo + " €");
+                                    }
+
+                                    optionalPrezzi.forEach(prezzo => {
+                                        prezzoTotale += prezzo;
+                                    });
+
+                                    optionalCheckboxes.forEach(cb => {
+                                        dettagli.push(cb.nextSibling.textContent + ": " + parseFloat(cb.value) + " €");
+                                    });
+
+                                    document.getElementById('prezzoTotale').textContent = prezzoTotale.toFixed(2);
+                                    document.getElementById('hidden_prezzo_totale').value = prezzoTotale.toFixed(2);
+                                    document.getElementById('prezzoDettagliato').innerHTML = dettagli.join("<br>");
+                                });
+                        } else {
+                            optionalPrezzi.forEach(prezzo => {
+                                prezzoTotale += prezzo;
+                            });
+
+                            optionalCheckboxes.forEach(cb => {
+                                dettagli.push(cb.nextSibling.textContent + ": " + parseFloat(cb.value) + " €");
+                            });
+
+                            document.getElementById('prezzoTotale').textContent = prezzoTotale.toFixed(2);
+                            document.getElementById('hidden_prezzo_totale').value = prezzoTotale.toFixed(2);
+                            document.getElementById('prezzoDettagliato').innerHTML = dettagli.join("<br>");
+                        }
+                    }
+                });
+        }
+    }
+
+    function updateModelImage() {
+        var modelloSelect = document.getElementById('modello');
+        var modelloNome = modelloSelect.value;
+        var coloreSelect = document.getElementById('colore');
+        var coloreNome = coloreSelect.value;
+
+        if (modelloNome && coloreNome) {
+            fetch('/get_immagini_modello_colore/' + modelloNome + '/' + coloreNome)
+                .then(response => response.json())
+                .then(data => {
+                    var immagini_urls = data.immagini_urls;
+                    if (immagini_urls.length > 0) {
+                        var carousel = `
+                            <div id="carouselExampleControls" class="carousel slide" data-ride="carousel">
+                                <div class="carousel-inner">
+                        `;
+                        immagini_urls.forEach((url, index) => {
+                            carousel += `
+                                <div class="carousel-item ${index === 0 ? 'active' : ''}">
+                                    <img src="${url}" class="d-block w-100" alt="...">
+                                </div>
+                            `;
+                        });
+                        carousel += `
+                                </div>
+                                <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+                                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Previous</span>
+                                </a>
+                                <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+                                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                                    <span class="sr-only">Next</span>
+                                </a>
+                            </div>
+                        `;
+                        document.getElementById('modelImage').innerHTML = carousel;
+
+                        // Set interval for auto-sliding
+                        $('.carousel').carousel({
+                            interval: 3000
+                        });
+                    } 
+                })
+                .catch(error => console.error('Errore durante il recupero delle immagini:', error));
+        } 
+    }
+
+    function updateColori() {
+        var modelloNome = document.getElementById('modello').value;
+        fetch('/get_colori/' + modelloNome)
+            .then(response => response.json())
+            .then(data => {
+                var coloreSelect = document.getElementById('colore');
+                coloreSelect.innerHTML = '<option value="" disabled selected>Seleziona un colore</option>';
+                data.forEach(colore => {
+                    var option = document.createElement('option');
+                    option.value = colore.nome;
+                    option.textContent = colore.nome.toUpperCase();
+                    coloreSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Errore durante il recupero dei colori:', error));
+    }
+
+    function updateMotori() {
+                var modelloNome = document.getElementById('modello').value;
+                fetch('/get_motori/' + modelloNome)
+                    .then(response => response.json())
+                    .then(data => {
+                        var motoreSelect = document.getElementById('motore');
+                        motoreSelect.innerHTML = '<option value="" disabled selected>Seleziona un motore</option>';
+                        data.forEach(motore => {
+                            var option = document.createElement('option');
+                            option.value = motore.codice;
+                            option.textContent = motore.nome.toUpperCase();
+                            motoreSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => console.error('Errore durante il recupero dei motori:', error));
+            }
+
+    function updateOptional() {
+        var modelloNome = document.getElementById('modello').value;
+        fetch('/get_optional/' + modelloNome)
+            .then(response => response.json())
+            .then(data => {
+                var optionalContainer = document.getElementById('optionalContainer');
+                optionalContainer.innerHTML = '';
+                data.forEach(optional => {
+                    var checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.name = 'optional';
+                    checkbox.value = optional.prezzo;
+                    checkbox.id = 'optional_' + optional.id;
+                    checkbox.className = 'w3-check';
+                    checkbox.addEventListener('change', updatePrezzoTotale);
+
+                    var label = document.createElement('label');
+                    label.htmlFor = 'optional_' + optional.id;
+                    label.textContent = optional.nome;
+
+                    optionalContainer.appendChild(checkbox);
+                    optionalContainer.appendChild(label);
+                    optionalContainer.appendChild(document.createElement('br'));
+                });
+            })
+            .catch(error => console.error('Errore durante il recupero degli optional:', error));
+    }
+});
+
+    </script>
+{% endblock %}

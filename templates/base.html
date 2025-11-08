@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>
+    {% block title %}
+    {% endblock %}
+  </title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Lato">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+  <!-- Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+  {% block altriLink %}{% endblock %}
+</head>
+
+<body>
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="messageContainer" class="center" style="display: none; border: 3px solid black;">
+        {% for message in messages %}
+          <h1 id="message">{{ message }}</h1>
+        {% endfor %}
+        <br /><br />
+        <button id="closeButton" class="formButton sfondoGiallo" style="border:2px solid black">Chiudi</button>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  {% block content %}{% endblock %}
+
+
+  <div class="w3-top containerNav">
+    <div class="w3-left w3-hide-small">
+      <a href="{{ url_for('home_page') }}" class="w3-bar-item w3-button w3-wide"><img id="logoNoNome" src="{{ url_for('static', filename='css/macchina_senzasfondo.png') }}" /></a>
+      <img id="nomeLogo" src="{{ url_for('static', filename='css/nomeLogo.png') }}" />
+    </div>
+    <div class="w3-right w3-hide-small">
+      <a href="{{ url_for('areaRiservataCliente') }}" class="w3-bar-item w3-button"><i class="fa fa-address-card-o"></i> AREA RISERVATA</a>
+      <a href="{{ url_for('login_cliente') }}" class="w3-bar-item w3-button"><i class="fa fa-user"></i> LOG IN</a>
+      <a href="{{ url_for('configuratore') }}" class="configuraBtn w3-bar-item w3-button"> CONFIGURA ORA</a>
+    </div>
+  </div>
+</body>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/baseCSS.css') }}">
+
+<script>
+  window.onload = function() {
+    var messageElement = document.getElementById("message");
+    var messageContainer = document.getElementById("messageContainer");
+    var closeButton = document.getElementById("closeButton");
+
+    // Controlla se esiste un messaggio flash e lo visualizza
+    if (messageElement) {
+        var message = messageElement.innerText.trim();
+        if (message) {
+            messageContainer.style.display = "block"; 
+        } else {
+            messageContainer.style.display = "none"; 
+        }
+    }
+
+    // Aggiunge un event listener al pulsante di chiusura per nascondere il messaggio
+    if (closeButton) {
+      closeButton.addEventListener("click", function() {
+        messageContainer.style.display = "none"; 
+        document.getElementById("registrationForm").reset(); 
+      });
+    }
+  }
+
+  
+</script>
+</html>

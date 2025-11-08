@@ -1,0 +1,604 @@
+{% extends 'amministrazione.html' %}
+
+  {% block sideBar %}
+    <div class="bgimg"></div>
+    <div class="w3-container">
+      {% if matricola %}
+      <div style="background-color: rgb(173, 173, 173); padding: 10px; border-radius: 10px;">
+        <h4>Segretario: {{ matricola }}</h4>
+        <a href="{{ url_for('logout_impiegato') }}" class="btn sfondoGiallo" style="width: 100%;"> LOGOUT</a>
+      </div>
+      {% endif %}
+  <br />
+  <br />
+    <div id="menu">
+      <ul class="w3-ul">
+        <li><a href="{{ url_for('pagina_ordini') }}" class="configuraBtn w3-bar-item w3-button" id="vediPreventivi" style="border: 2px solid rgb(96, 96, 96); width: 100%;">ORDINI</a></li>
+        <br>
+        <li><a href="#" class="configuraBtn w3-bar-item w3-button" id="gestioneAuto" style="border: 2px solid rgb(96, 96, 96); width: 100%;">GESTIONE AUTO</a></li>
+      </ul>
+    </div>
+    
+    <ul id="configuraLinks" class="w3-ul" style="font-size: 22px;">
+      <li><a href="#brand" class="configuraBtn w3-bar-item w3-button">BRAND</a></li>
+      <li><a href="#colore" class="configuraBtn w3-bar-item w3-button">COLORE</a></li>
+      <li><a href="#inserimentoModelli" class="configuraBtn w3-bar-item w3-button">MODELLI AUTO</a></li>
+      <li><a href="#motore" class="configuraBtn w3-bar-item w3-button">MOTORE</a></li>
+      <li><a href="#immagini" class="configuraBtn w3-bar-item w3-button">IMMAGINI</a></li>
+      <li><a href="#optional" class="configuraBtn w3-bar-item w3-button">OPTIONAL</a></li>
+      <li><a href="#sconto" class="configuraBtn w3-bar-item w3-button">SCONTO</a></li>
+    </ul>
+    
+      </div>
+  {% endblock %}
+
+  {% block content %}
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div id="messageContainer" class="center">
+
+          {% for message in messages %}
+            <h1 id="message">{{ message }}</h1>
+          {% endfor %}
+
+          <br /><br />
+          <button id="closeButton" class="formButton">Chiudi</button>
+        </div>
+
+      {% endif %}
+    {% endwith %}
+
+<!----------------------------------------------BRAND----------------------------------------------------->
+
+  <div class="containerForm" id="brand">
+    <div class="containerTitolone">
+      <h1 class="titoloContainer">BRAND</h1>
+    </div>
+    <h2 class="sottotitoloContainer">INSERIMENTO BRAND</h2>
+    <form id="registrationForm" action="/aggiungi_brand" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+            <label for="nome">Nome Brand:</label>
+            <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il nome del brand" type="text" id="nome" name="nome" required value="{{ request.form.get('nome', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+            <button type="submit" class="formButton w3-button w3-center">Aggiungi Brand</button>
+        </div>
+    </form>
+  
+    <h2 class="sottotitoloContainer">ELIMINAZIONE BRAND</h2>
+  
+    <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+      <thead>
+        <tr>
+          <th class="w3-center">BRAND</th>
+          <th class="w3-center">AZIONE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for brand in marche_auto %}
+          <tr>
+            <td class="w3-center">{{ brand.nome }}</td>
+            <td class="w3-center">
+              <a href="{{ url_for('elimina_brand', brand_nome=brand.nome) }}" class="deleteButton w3-button w3-center">Elimina</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+<!----------------------------------------------COLORE----------------------------------------------------->
+
+  <div class="containerForm" id="colore">
+    <div class="containerTitolone">
+        <h1 class="titoloContainer">COLORE</h1>
+    </div>
+    <h2 class="sottotitoloContainer">INSERIMENTO COLORE</h2>
+    <form id="registrationForm" action="/aggiungi_colore" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+            <label for="nome">Nome Colore:</label>
+            <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il nome del colore" type="text" id="nome" name="nome" required value="{{ request.form.get('nome', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+            <button type="submit" class="formButton w3-button w3-center">Aggiungi Colore</button>
+        </div>
+    </form>
+
+    <h2 class="sottotitoloContainer">ELIMINAZIONE COLORE</h2>
+
+    <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+      <thead>
+        <tr>
+          <th class="w3-center">COLORE</th>
+          <th class="w3-center">AZIONE</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for colore in colore_auto %}
+          <tr>
+            <td class="w3-center">{{ colore.nome }}</td>
+            <td class="w3-center">
+              <a href="{{ url_for('elimina_colore', colore_nome=colore.nome) }}" class="deleteButton w3-button w3-center">Elimina</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+
+    <h2 class="sottotitoloContainer">ASSEGNAMENTO COLORI A MODELLI</h2>
+    <form id="assignOptionalForm" action="/assegna_colore" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <!--<div class="w3-section fieldContainer">
+            <label for="id">ID:</label>
+            <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire l'ID" type="text" id="id" name="id" required value="{{ request.form.get('id', '') }}">
+        </div>-->
+        <div class="w3-section fieldContainer">
+            <label for="modello">Seleziona un modello:</label>
+            <select class="campoInserimento w3-input" style="width:100%;" id="modello" name="modello" required>
+                {% for modello in modelli_auto %}
+                <option value="{{ modello.nome }}">{{ modello.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="w3-section fieldContainer">
+            <label for="colore">Seleziona un colore:</label>
+            <select class="campoInserimento w3-input" style="width:100%;" id="colore" name="colore" required>
+                {% for colore in colore_auto %}
+                <option value="{{ colore.nome }}">{{ colore.nome }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="w3-section fieldContainer">
+            <label for="prezzo">Prezzo:</label>
+            <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il prezzo" type="number" id="prezzo" name="prezzo" required>
+        </div>
+        <div class="w3-section fieldContainer">
+            <button type="submit" class="formButton w3-button w3-center">Assegna Colore</button>
+        </div>
+    </form>
+
+    <h2 class="sottotitoloContainer">ELIMINAZIONE ASSEGNAMENTO COLORE-MODELLO</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">COLORE</th>
+            <th class="w3-center">MODELLO</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for colore in coloreModello %}
+            <tr>
+              <td class="w3-center">{{ colore.colore.nome }}</td>
+              <td class="w3-center">{{ colore.modello.nome }}</td>
+              <td class="w3-center">
+                <a href="{{ url_for('elimina_assegnamentoColore', colore_nome=colore.id) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+<!----------------------------------------------MODELLO----------------------------------------------------->
+    <div class="containerForm" id="inserimentoModelli">
+      <div class="containerTitolone">
+        <h1 class="titoloContainer">MODELLI AUTO</h1>
+      </div>
+
+      <h2 class="sottotitoloContainer">INSERIMENTO MODELLO</h2>
+      <form id="registrationForm" action="/aggiungi_modello" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="nome">Nome:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il nome" type="text" id="nome" name="nome" required value="{{ request.form.get('nome', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="marca">Marca:</label>
+          <select class="w3-input campoInserimento" id="marca" name="marca" required>
+            {% for marca in marche_auto %}
+              <option value="{{ marca.nome }}">{{ marca.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="descrizione">Descrizione:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la descrizione" type="text" id="descrizione" name="descrizione" required value="{{ request.form.get('descrizione', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="altezza">Altezza (mm):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire l'altezza" type="number" id="altezza" name="altezza" required value="{{ request.form.get('altezza', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="lunghezza">Lunghezza (mm):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la lunghezza" type="number" id="lunghezza" name="lunghezza" required value="{{ request.form.get('lunghezza', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="larghezza">Larghezza (mm):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la larghezza" type="number" id="larghezza" name="larghezza" required value="{{ request.form.get('larghezza', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="peso">Peso (kg):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il peso" type="number" id="peso" name="peso" required value="{{ request.form.get('peso', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="bagagliaio">Volume del bagagliaio (litri):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il volume" type="number" id="bagagliaio" name="bagagliaio" required value="{{ request.form.get('bagagliaio', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="prezzo_base">Prezzo base (€):</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il prezzo" type="number" id="prezzo_base" name="prezzo_base" required value="{{ request.form.get('prezzo_base', '') }}">
+        </div>
+        <br />
+        <div class="w3-section fieldContainer">
+            <button type="submit" class="formButton w3-button w3-center">Aggiungi Modello</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINA MODELLO</h2>
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">NOME</th>
+            <th class="w3-center">MARCA</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for modello in modelli_auto %}
+            <tr>
+              <td class="w3-center">{{ modello.nome }}</td>
+              <td class="w3-center">{{ modello.brand.nome }}</td>
+              <td class="w3-center">
+                <a href="{{ url_for('rimuovi_modello', nome=modello.nome) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-----------------------------------------------MOTORE---------------------------------------------------->
+    <div class=" containerForm" id="motore">
+      <div class="containerTitolone">
+        <h1 class="titoloContainer">MOTORE</h1>
+      </div>
+      <h2 class="sottotitoloContainer">INSERIMENTO TIPOLOGIE MOTORE</h2>
+      <form id="registrationForm" action="/aggiungi_motore" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="alimentazione">Alimentazione motore:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il tipo di alimentazione" type="text" id="alimentazione" name="alimentazione" required value="{{ request.form.get('alimentazione', '') }}">
+        </div>
+        <br />
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button  w3-center">Aggiungi Motore</button>
+        </div>
+      </form>
+    
+      <h2 class="sottotitoloContainer">ELIMINAZIONE TIPOLOGIE DI MOTORE</h2>
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">ALIMENTAZIONE</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for motore in motori %}
+            <tr>
+              <td class="w3-center">{{ motore.alimentazione }}</td>
+              <td class="w3-center">
+                <a href="{{ url_for('rimuovi_motore', codice=motore.codice) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="sottotitoloContainer">ASSEGNAMENTO MOTORI AI MODELLI</h2>
+      <form action="/assegna_motore" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="modello">Seleziona un modello:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="modello" name="modello" required>
+            {% for modello in modelli_auto %}
+              <option value="{{ modello.nome }}">{{ modello.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="motore">Seleziona un motore:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="motore" name="motore" required>
+            {% for motore in motori %}
+              <option value="{{ motore.codice }}">{{ motore.alimentazione }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="prezzo">Prezzo:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il prezzo" type="number" id="prezzo" name="prezzo" required>
+        </div>
+        <div class="w3-section fieldContainer">
+            <button type="submit" class="formButton w3-button w3-center">Assegna Motore</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE ASSEGNAMENTO MOTORE-MODELLO</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">MODELLO</th>
+            <th class="w3-center">MOTORE</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for motore in motoreModello %}
+            <tr>
+              <td class="w3-center">{{ motore.modello.nome }}</td>
+              <td class="w3-center">{{ motore.motore.codice }} - {{ motore.motore.alimentazione }}</td>
+              <td class="w3-center">
+                <a href="{{ url_for('elimina_assegnamentoMotore', nome=motore.id) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+<!----------------------------------------------IMMAGINI----------------------------------------------------->
+    <div class=" containerForm" id="immagini">
+      <div class="containerTitolone">
+        <h1 class="titoloContainer">IMMAGINI</h1>
+      </div>
+
+      <h2 class="sottotitoloContainer">INSERIMENTO IMMAGINE MODELLO</h2>
+      <form id="registrationForm" action="/aggiungi_immagine" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+            <label for="codiceURL">URL:</label>
+            <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il codice" type="text" id="codiceURL" name="codiceURL" required value="{{ request.form.get('codiceURL', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="colore_modello">Colore - Modello:</label>
+          <select class="w3-input campoInserimento" id="colore_modello" name="colore_modello" required>
+            {% for colore_modello in coloreModello %}
+              <option value="{{ colore_modello.modello.nome }}_{{ colore_modello.colore.nome }}">{{ colore_modello.modello.nome | upper }} - {{ colore_modello.colore.nome | upper }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <br />
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button  w3-center">Aggiungi Immagine Modello</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE IMMAGINE</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">IMMAGINE</th>
+            <th class="w3-center">MODELLO</th>
+            <th class="w3-center">COLORE</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for immagine in immagini %}
+            <tr>
+              <td class="w3-center"><img src="{{ immagine.codiceURL }}" style="width:300px"/></td>
+              <td class="w3-center">{{ immagine.modello.nome | upper}}</td>
+              <td class="w3-center">{{ immagine.colore.nome | upper }}</td>
+              <td class="w3-center">
+                  <a href="{{ url_for('elimina_immagini', cod=immagine.codice) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+<!----------------------------------------------OPTIONAL----------------------------------------------------->
+    <div class="containerForm" id="optional">
+      <div class="containerTitolone">
+        <h1 class="titoloContainer">OPTIONAL</h1>
+      </div>
+      <h2 class="sottotitoloContainer">INSERIMENTO OPTIONAL</h2>
+      <form id="optionalForm" action="/aggiungi_optional" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="nome">Nome dell'optional:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il nome dell'optional" type="text" id="nome" name="nome" required value="{{ request.form.get('nome', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button w3-center">Aggiungi Optional</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE OPTIONAL</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">OPTIONAL</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for optional in optionals %}
+            <tr>
+              <td class="w3-center">{{ optional.nome }}</td>
+              <td class="w3-center">
+                  <a href="{{ url_for('rimuovi_optional', nome=optional.nome) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="sottotitoloContainer">ASSEGNAMENTO OPTIONAL AI MODELLI</h2>
+      <form id="assignOptionalForm" action="/assegna_optional" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="modello">Seleziona un modello:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="modello" name="modello" required>
+            {% for modello in modelli_auto %}
+              <option value="{{ modello.nome }}">{{ modello.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="optional">Seleziona un optional:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="optional" name="optional" required>
+            {% for optional in optionals %}
+              <option value="{{ optional.nome }}">{{ optional.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="prezzo">Prezzo:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il prezzo" type="number" id="prezzo" name="prezzo" required>
+        </div>
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button w3-center">Assegna Optional</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE ASSEGNAMENTO OPTIONAL-MODELLO</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">OPTIONAL</th>
+            <th class="w3-center">MODELLO</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for optional in optionalModello %}
+            <tr>
+              <td class="w3-center">{{ optional.optional.nome }}</td>
+              <td class="w3-center">{{ optional.modello.nome }}</td>
+              <td class="w3-center">
+                <a href="{{ url_for('elimina_assegnamentoOptional', optional_nome=optional.id) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!----------------------------------------------SCONTO----------------------------------------------------->
+    <div class="containerForm" id="sconto">
+      <div class="containerTitolone">
+          <h1 class="titoloContainer">SCONTO</h1>
+      </div>  
+      <h2 class="sottotitoloContainer">INSERIMENTO SCONTO</h2>
+      <form id="optionalForm" action="/aggiungi_sconto" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="codice">Codice:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire il codice" type="text" id="codice" name="codice" required value="{{ request.form.get('codice', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="dal">Dal:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la data di inizio" type="date" id="dal" name="dal" required value="{{ request.form.get('dal', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="al">Al:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la data di fine" type="date" id="al" name="al" required value="{{ request.form.get('al', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="percentuale">Percentuale:</label>
+          <input class="campoInserimento w3-input" style="width:100%;" placeholder="Inserire la percentuale" type="number" id="percentuale" name="percentuale" required value="{{ request.form.get('percentuale', '') }}">
+        </div>
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button w3-center">Aggiungi Sconto</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE SCONTO</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">SCONTO</th>
+            <th class="w3-center">VALORE</th>
+            <th class="w3-center">DAL</th>
+            <th class="w3-center">AL</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sconto in sconti %}
+            <tr>
+              <td class="w3-center">{{ sconto.codice }}</td>
+              <td class="w3-center">{{ sconto.percentuale }} % </td>
+              <td class="w3-center">{{ sconto.dal }}</td>
+              <td class="w3-center">{{ sconto.al }}</td>
+              <td class="w3-center">
+                  <a href="{{ url_for('elimina_sconto', codice=sconto.codice) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <h2 class="sottotitoloContainer">ASSEGNAMENTO SCONTO AI MODELLI</h2>
+      <form id="assignOptionalForm" action="/assegna_sconto" class="formInserimento w3-container w3-card w3-padding-32" method="post">
+        <div class="w3-section fieldContainer">
+          <label for="modello">Seleziona un modello:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="modello" name="modello" required>
+            {% for modello in modelli_auto %}
+              <option value="{{ modello.nome }}">{{ modello.nome }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <label for="sconto">Seleziona uno sconto:</label>
+          <select class="campoInserimento w3-input" style="width:100%;" id="sconto" name="sconto" required>
+            {% for sconto in sconti %}
+              <option value="{{ sconto.codice }}">Codice {{ sconto.codice }} del {{ sconto.percentuale }}% dal {{ sconto.dal }}   al {{ sconto.al }} </option>
+            {% endfor %}
+          </select>
+        </div>
+        <div class="w3-section fieldContainer">
+          <button type="submit" class="formButton w3-button w3-center">Assegna Sconto</button>
+        </div>
+      </form>
+
+      <h2 class="sottotitoloContainer">ELIMINAZIONE ASSEGNAMENTO SCONTO-MODELLO</h2>
+
+      <table class="formInserimento w3-container w3-card w3-padding-32 w3-table w3-striped w3-bordered">
+        <thead>
+          <tr>
+            <th class="w3-center">SCONTO</th>
+            <th class="w3-center">MODELLO</th>
+            <th class="w3-center">AZIONE</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for sconto in scontiModello %}
+            <tr>
+              <td class="w3-center">Codice {{ sconto.sconto.codice }} del {{ sconto.sconto.percentuale }}%</td>
+              <td class="w3-center">{{ sconto.modello.nome }}</td>
+              <td class="w3-center">
+                  <a href="{{ url_for('elimina_assegnamentoSconto', codice=sconto.id) }}" class="deleteButton w3-button w3-center">Elimina</a>
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </body>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      var closeButton = document.getElementById('closeButton');
+      var messageContainer = document.getElementById('messageContainer');
+
+      if (closeButton && messageContainer) {
+        closeButton.addEventListener('click', function() {
+            messageContainer.style.display = 'none';
+        });
+      }
+    });
+  </script>
+{% endblock %}

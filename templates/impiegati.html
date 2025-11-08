@@ -1,0 +1,225 @@
+{% extends 'amministrazione.html' %}
+
+{% block sideBar %}
+  <div class="bgimg"></div>
+  <div class="w3-container">
+    {% if matricola %}
+      <div style="background-color: rgb(173, 173, 173); padding: 10px; border-radius: 10px;">
+        <h4>Impiegato: {{ matricola }}</h4>
+          <a href="{{ url_for('logout_impiegato') }}" class="btn sfondoGiallo" style="width: 100%;"> LOGOUT</a>
+      </div>
+    {% endif %}
+    <br />
+    <ul class="w3-ul">
+      <li><a href="#preventivi" class="configuraBtn w3-bar-item w3-button" style="border: 2px solid gray;">PREVENTIVI</a></li>
+      <li><a href="#preventiviUsato" class="configuraBtn w3-bar-item w3-button">VALUTAZIONE USATO</a></li>
+      <br>
+      <li><a href="#ordini" class="configuraBtn w3-bar-item w3-button" style="border: 2px solid gray;">ORDINI</a></li>
+      <li><a href="#ordiniDaConfermare" class="configuraBtn w3-bar-item w3-button">ORDINI DA CONFERMARE</a></li>
+      <li><a href="#ordiniConsegnati" class="configuraBtn w3-bar-item w3-button">ORDINI CONSEGNATI</a></li>  
+    </ul>
+  </div>
+{% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="messageContainer" class="center">
+        {% for message in messages %}
+          <h1 id="message">{{ message }}</h1>
+        {% endfor %}
+        <br /><br />
+        <button id="closeButton" class="formButton">Chiudi</button>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="containerTitolone" style="margin-top: 100px">
+    <h1 class="titoloContainer" id="preventivi">PREVENTIVI</h1>
+  </div>
+  <h2 style="margin-top: 100px">Tutti i preventivi</h2>
+  <p>In questa sezione è possibile trovare riepilogati tutti i preventivi presenti nel database. Sono presenti i preventivi richiesti dall'utente ma non ancora valutati, quelli valutati ma non confermati e anche quelli confermati.</p>
+  <table class="table table-bordered" style="font-size: 20px; padding: 30px; min-width: 100%; background-color: rgb(244, 244, 244);">
+    <thead>
+      <tr>
+        <th class="w3-center">Codice</th>
+        <th class="w3-center">Data</th>
+        <th class="w3-center">Cliente</th>
+        <th class="w3-center">Importo</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for preventivo in preventivi %}
+        <tr>
+          <td class="text-center align-middle">{{ preventivo.codice }}</td>
+          <td class="text-center align-middle">{{ preventivo.data }}</td>
+          <td class="text-center align-middle">{{ preventivo.cliente.email }}</td>
+          <td class="text-center align-middle">{{ preventivo.prezzo }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 id="preventiviUsato" style="margin-top: 100px">Usato da valutare</h2>
+  <p>In questa sezione sono disponibili i preventivi che richiedono la valutazione dell'usato. Una volta valutate le foto presenti nella sezione <i>Foto Usato</i> inserire l'importo da detrarre nella sezione <i>Valutazione</i>. </p>
+  <p style="color: red;">ATTENZIONE!!! Una volta premuto il tasto <i>Decurtazione</i>, il valore non potrà più essere modificato.</p>
+  <table class="table table-bordered" style="font-size: 20px; padding: 30px; min-width: 100%; background-color: rgb(244, 244, 244);">
+    <thead>
+      <tr>
+        <th class="w3-center">Codice</th>
+        <th class="w3-center">Foto Usato</th>
+        <th class="w3-center">Importo configurazione</th>
+        <th class="w3-center">Valutazione</th>
+        <th class="w3-center">Importo totale</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for preventivo in preventiviUsato %}
+        <tr>
+          <td class="text-center align-middle">
+            Codice preventivo: {{ preventivo.codice }}
+            <br><br>
+            Mail Cliente: {{ preventivo.cliente.email }}
+          </td>
+          <td class="text-center align-middle">
+            {% for foto in fotoUsato if foto.targaUsato.targa == preventivo.auto_rottamata.targa %}
+              <a href="{{ url_for('view_photo', foto_id=foto.codice) }}" target="_blank">Foto</a><br>
+            {% endfor %}
+          </td>
+          <td class="text-center align-middle">{{ preventivo.auto.prezzo_totale }}</td>
+
+          <td class="text-center align-middle">
+            <form action="{{ url_for('gestisci_preventivi') }}" method="POST">
+              <input type="hidden" name="codice" value="{{ preventivo.codice }}">
+              <label for="valore_sconto_rottamazione">Valore Sconto Rottamazione:</label>
+              <input class="campoInserimento w3-input" type="text" name="valore_sconto_rottamazione" value="{{ preventivo.valore_sconto_rottamazione }}">
+              <br>
+              <button type="submit" class="formButton w3-button w3-center">Decurtazione</button>
+            </form>
+          </td>
+          <td class="text-center align-middle">
+            {{ preventivo.prezzo }}
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <br><br>
+
+  <div class="containerTitolone">
+    <h1 class="titoloContainer" id="ordini">ORDINI</h1>
+  </div>
+
+  <h2 style="margin-top: 100px">Tutti gli ordini</h2>
+  <p>In questa sezione è possibile trovare riepilogati tutti quei preventivi confermati dall'utente e oramai divenuti ordini. Sono presenti i preventivi confermati dall'utente ma non ancora gestiti, gli ordini confermati dall'amministrazione e gli ordini consegnati. </p>
+  <table class="table table-bordered" style="font-size: 20px; padding: 30px; min-width: 100%; background-color: rgb(244, 244, 244);">
+    <thead>
+      <tr>
+        <th class="w3-center">Codice</th>
+        <th class="w3-center">Sede di consegna</th>
+        <th class="w3-center">Data di consegna</th>
+        <th class="w3-center">Importo totale</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ordine in ordini %}
+        <tr>
+            <td class="text-center align-middle">{{ ordine.codice }}</td>
+            <td class="text-center align-middle">{{ ordine.sede_ritiro.nome }}</td>
+            <td class="text-center align-middle">{{ ordine.data_consegna }}</td>
+            <td class="text-center align-middle">{{ ordine.preventivo.prezzo }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 id="ordiniDaConfermare" style="margin-top: 100px">Ordini da confermare</h2>
+  <p>In questa sezione sono presenti i preventivi confermati dall'utente che sono divenuti ordini. </p>
+  <p style="color: red;">ATTENZIONE!!! Una volta premuto il tasto <i>Sostituisci</i>, l'ordine sarà confermato e sparirà da questa tabella. Risulterà disponibile per la lettura in <i>Tutti gli ordini</i>.</p>
+
+  <table class="table table-bordered" style="font-size: 20px; padding: 30px; min-width: 100%; background-color: rgb(244, 244, 244);">
+    <thead>
+      <tr>        
+        <th class="w3-center">Ordine</th>
+        <th class="w3-center">Consegna</th>
+        <th class="w3-center">Pagamento</th>
+        <th class="w3-center">Modifica Data di Consegna</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ordine in ordiniImpiegato %}
+        <tr>
+          <td class="text-center align-middle">
+            Ordine: {{ ordine.codice }}
+            <br >
+            Cliente: {{ ordine.preventivo.cliente.email }}
+          </td>
+          <td class="text-center align-middle">
+            Sede: {{ ordine.sede_ritiro.nome }}
+            Data: {{ ordine.data_consegna }}
+          </td>
+          <td class="text-center align-middle">
+            <a href="{{ url_for('view_bollettino', ordine_id=ordine.codice) }}" target="_blank">Visualizza Bollettino</a>
+          </td>
+          <td class="text-center align-middle">
+            <form action="{{ url_for('gestisci_ordini') }}" method="POST">
+              <input type="hidden" name="codice" value="{{ ordine.codice }}">
+              <label for="data_consegna">Nuova data di consegna:</label>
+              <input class="campoInserimento w3-input" type="date" name="data_consegna" value="{{ ordine.data_consegna }}">
+              <br>
+              <button type="submit" class="formButton w3-button w3-center">Sostituisci</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2 id="ordiniConsegnati" style="margin-top: 100px">Ordini Consegnati</h2>
+  <p>In questa sezione sono presenti gli ordini confermati dall'amministrazione per i quali l'utente non è ancora stato avvisato della consegna. All'invio , un messaggio contenente il modello, la sede di consegna e la data dell'invio, varrà generato automaticamente e visualizzato nell'area riservata del cliente. </p>
+  <p style="color: red;">ATTENZIONE!!! Una volta premuto il tasto <i>Invia Messaggio</i>, l'ordine sparirà da questa tabella e risulterà disponibile per la lettura in <i>Tutti gli ordini</i>.</p>
+  <table class="table table-bordered" style="font-size: 20px; padding: 30px; min-width: 100%; background-color: rgb(244, 244, 244);">
+    <thead>
+      <tr>
+        <th class="w3-center">Codice</th>
+        <th class="w3-center">Sede di Consegna</th>
+        <th class="w3-center">Importo Totale</th>
+        <th class="w3-center">Invio Messaggio</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for ordine in ordiniConsegnati %}
+        <tr>
+          <td class="text-center align-middle">
+            Ordine: {{ ordine.codice }}
+            <br >
+            Cliente: {{ ordine.preventivo.cliente.email }}
+          </td>
+          <td class="text-center align-middle">{{ ordine.sede_ritiro.nome }}</td>
+          <td class="text-center align-middle">{{ ordine.preventivo.prezzo }}</td>
+          <td class="text-center align-middle">
+            <form action="{{ url_for('invia_messaggio') }}" method="POST">
+              <input type="hidden" name="codice_ordine" value="{{ ordine.codice }}">
+              <button type="submit" class="formButton w3-button w3-center">Invia Messaggio</button>
+            </form>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var closeButton = document.getElementById('closeButton');
+        var messageContainer = document.getElementById('messageContainer');
+        if (closeButton && messageContainer) {
+            closeButton.addEventListener('click', function() {
+                messageContainer.style.display = 'none';
+            });
+        }
+    });
+  </script>
+{% endblock %}

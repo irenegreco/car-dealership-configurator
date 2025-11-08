@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Pagina Registrazione
+{% endblock %}
+
+{% block content %}
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <div id="messageContainer" class="center" style="display: none">
+        {% for message in messages %}
+          <h1 id="message">{{ message }}</h1>
+        {% endfor %}
+        <br /><br />
+        <button id="closeButton" class="formButton sfondoGiallo">Chiudi</button>
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class=" containerForm">
+    <h1>REGISTRATI</h1>
+    <form id="registrationForm" class="formLogin w3-container w3-card w3-padding-32" method="post">
+      <div class="w3-section">
+        <label>Nome</label>
+        <input class="w3-input" style="width:100%;" type="text" placeholder="Inserire il nome" required name="name" value="{{ request.form.get('name', '') }}">        
+      </div>
+      <div class="w3-section">
+        <label>Cognome</label>
+        <input class="w3-input" style="width:100%;" type="text" placeholder="Inserire il cognome" required name="surname" value="{{ request.form.get('surname', '') }}">
+      </div>
+      <div class="w3-section">
+        <label>Email</label>
+        <input class="w3-input" style="width:100%;" type="text" placeholder="Inserire lo username" required name="usrname" value="{{ request.form.get('usrname', '') }}">
+      </div>
+      <div class="w3-section">
+        <label>Password</label>
+        <input class="w3-input" style="width:100%;" type="password" placeholder="Inserire la password" required name="psw">
+      </div>
+      <br /><br />
+      <button type="submit" class="formButton w3-button  w3-center sfondoGiallo">REGISTRA ORA</button>
+      <br /><br />
+      <a href="{{ url_for('login_cliente') }}" class="formButton w3-button  w3-center" style=" background-color: #bdbbbada;">VAI ALL' ACCESSO</a>
+    </form>
+  </div>
+
+  <script>
+    window.onload = function() {
+      var registrationForm = document.getElementById("registrationForm");
+      if (registrationForm) {
+        registrationForm.addEventListener("submit", function(event) {
+            event.preventDefault(); 
+        });
+      }
+    };
+  </script>
+{% endblock %}

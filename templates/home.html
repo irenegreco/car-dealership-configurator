@@ -1,0 +1,171 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block msg %}
+    {{ super() }} <!-- Mantieni il contenuto del blocco msg definito in base.html -->
+{% endblock %}
+
+{% block content %}
+  <div class="elementoSfondo bgimg-1 w3-display-container " style="display:flex;">
+    <div class="w3-display-middle" style=" display:flex;">
+      <h1 class="titolone">LIVING YOUR DREAM</h1>
+    </div>
+  </div>
+
+  <div class="mySlides elementoSfondo sconto1 w3-display-container " style="display:flex;">
+    <div class="w3-display-middle w3-container w3-text-white w3-padding-32 w3-hide-small" style="justify-content: center;">
+      <h2 class="w3-center"><b>Il Lusso su Quattro Ruote: Realizza il Tuo Sogno con le Nostre Super Car</b></h2>
+    </div>
+  </div>
+
+  <div class="mySlides elementoSfondo sconto2 w3-display-container " style="display:flex;">
+    <div class="w3-display-middle w3-container w3-text-white w3-padding-32 w3-hide-small">
+      <h2><b>ROTTAMA E RISPARMIA</b></h2>   
+    </div>
+  </div>
+
+  <div class="mySlides elementoSfondo sconto3 w3-display-container " style="display:flex;">
+    <div class="w3-display-middle w3-container w3-text-white w3-padding-32 w3-hide-small">
+      <h2 class="w3-center"><b>Non perderti i nostri sconti. Vai alla sezione SCONTI</b></h2>   
+    </div>
+  </div>
+
+  <div class="w3-content w3-container w3-padding-64" id="about">
+    <h3 class="w3-center">CHI SIAMO</h3>
+    <p style="text-align: justify;">HeavenMotors è una multiconcessionaria di vendita online di auto di lusso di diversi brand, tra cui Ferrari, Porsche e Mercedes. Qui potrai acquistare in modo facile e veloce la tua auto personalizzata. Potrai trovare tutto ciò di cui hai bisogno nella barra di navigazione. Configura la tua auto premendo <b>CONFIGURA ORA</b> e personalizzala come più desideri. In <b>AREA RISERVATA</b>, in seguito all'accesso, potrai vedere tutte le tue configurazioni e richiederne eventualmente un preventivo.</p>
+    <p style="text-align: justify">Ricorda che alla richiesta del preventivo potrai richiedere la valutazione del tuo usato semplicemente caricando delle foto. Un nostro collaboratore si occuperà di valutare l'auto e applicare uno sconto al tuo preventivo. Inoltre, c'è la possibilità di ottenere un ulteriore sconto se previsto dal nostro calendario. Non dimenticarti di controllare la sezione <b>SCONTI</b> qui sotto in modo da non perderteli.</p>
+  </div>
+    
+  <div class="w3-row w3-center w3-dark-grey w3-padding-64" style="padding: 20px 80px;">
+    <h1>SCONTI</h1>
+    <table class="table table-striped table-hover table-bordered" style="font-size: 20px;">
+      <thead>
+        <tr>
+            <th class="text-center align-middle">Codice Sconto</th>
+            <th class="text-center align-middle">Dal</th>
+            <th class="text-center align-middle">Al</th>
+            <th class="text-center align-middle">Modelli Associati</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for sconto in sconti_con_modelli %}
+          <tr>
+              <td class="text-center align-middle">{{ sconto.codice }}</td>
+              <td class="text-center align-middle">{{ sconto.dal }}</td>
+              <td class="text-center align-middle">{{ sconto.al }}</td>
+              <td class="text-center align-middle">
+                      {% for modello in sconto.modelli %}
+                          {{ modello.nome }}<br>
+                      {% endfor %}
+              </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  
+  <div class="elementoSfondo bgimg-2 w3-display-container ">
+    <div class="w3-display-middle w3-center" style="color: white;">
+      <h3 class="titoloParagrafi">LISTINO AUTOMOBILI</h3>
+    </div>
+  </div>
+     
+  <div class="w3-center" style="width: 100%; margin-top: 100px;">
+  </div>
+      
+  {% for marca, modelli in modelli_per_marca.items() %}
+    <div class="containerListinoAuto">
+      <h1>{{ marca.nome | upper }}</h1>
+      <div class="row">
+        {% for modello in modelli %}
+          <div class="col">
+            <div class="listinoAuto w3-half">
+              <ul class="w3-ul w3-center w3-card w3-hover-shadow">
+                <li class="titoloListino w3-black w3-xxlarge w3-padding-32">{{ modello.nome | upper}}</li>
+                {% if modello.immagine %}
+                  {% set prima_immagine = modello.immagine|list|first %}
+                  <li class="riquadroAuto"><img class="imgListino" src="{{ prima_immagine.codiceURL }}" /></li>
+                {% else %}
+                  <li class="riquadroAuto">Immagine non disponibile</li>
+                {% endif %}
+                <li class="w3-padding-16">Descrizione: {{ modello.descrizione }}</li>
+                <li class="w3-padding-16">Altezza: {{ modello.altezza }}</li>
+                <li class="w3-padding-16">Lunghezza: {{ modello.lunghezza }}</li>
+                <li class="w3-padding-16">Larghezza: {{ modello.larghezza }}</li>
+                <li class="w3-padding-16">Peso: {{ modello.peso }}</li>
+                <li class="w3-padding-16">Volume bagagliaio: {{ modello.bagagliaio }}</li>
+                <li class="w3-padding-16"><h2>A partire da € {{ modello.prezzo_base }}</h2></li>
+              </ul>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  <div class="elementoSfondo bgimg-3 w3-display-container ">
+  </div>
+  
+  <div class=" w3-container" id="contact" style=" width: 100%; padding: 50px 150px;">
+    <h3 class="w3-center">ECCO DOVE PUOI TROVARCI</h3>
+    <p class="w3-center"><em>Ti aspettiamo!!!</em></p>
+  
+    <div class="w3-row w3-padding-32 w3-section" style=" min-width: 100%;">
+      <div class="w3-col m4 w3-container" style=" width: 50%; margin-right: 0;">
+        <img src="{{ url_for('static', filename='css/mappa.jpg') }}" class="w3-image w3-round" style="width:100%">
+      </div>
+      <div class="w3-col m8 w3-panel" style="width: 40%; margin-left: 0; padding-left: 50px;">
+        <div class="w3-large w3-margin-bottom" style="padding-bottom: 20px;">
+          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Strada Le Grazie, 15, Verona (VR) <br>
+          <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Phone: +39 045 7474747<br>
+          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: heavenMotorsVerona@mail.com<br>
+        </div>
+        
+        <div class="w3-large w3-margin-bottom" style="padding-bottom: 20px;">
+          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Via Roma, 123, Montisola (BS)<br>
+          <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Phone: +39 036 6868686<br>
+          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: heavenMotorsMontisola@mail.com<br>
+        </div>
+
+        <div class="w3-large w3-margin-bottom" style="padding-bottom: 20px;">
+          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Via Reggio Calabria, 1, Reggio Emilia (RE)<br>
+          <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Phone: +39 052 2313131<br>
+          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: heavenMotorsReggioEmilia@mail.com<br>
+        </div>
+
+        <div class="w3-large w3-margin-bottom" style="padding-bottom: 20px;">
+          <i class="fa fa-map-marker fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Via Milano, 321, Modena (MO)<br>
+          <i class="fa fa-phone fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Phone: +39 059 9292929<br>
+          <i class="fa fa-envelope fa-fw w3-hover-text-black w3-xlarge w3-margin-right"></i> Email: heavenMotorsModela@mail.com<br>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <footer class="w3-center w3-black w3-padding-32 w3-opacity">
+    <div class="w3-xlarge w3-section">
+      <a class="w3-black" href="{{ url_for('amministrazione') }}">Vai alla pagina di amministrazione</a>
+    </div>
+  </footer>
+   
+  <script>
+    // Carosello immagini ogni 4 secondi 
+    var myIndex = 0;
+    carousel();
+
+    function carousel() {
+      var i;
+      var x = document.getElementsByClassName("mySlides");
+      for (i = 0; i < x.length; i++) {
+        x[i].style.display = "none";  
+      }
+      myIndex++;
+      if (myIndex > x.length) {myIndex = 1}    
+      x[myIndex-1].style.display = "block";  
+      setTimeout(carousel, 4000);    
+    };
+  </script>
+{% endblock %}
